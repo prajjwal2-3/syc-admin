@@ -88,6 +88,21 @@ const PropertyEditForm = ({ property }) => {
             />
           </Grid>
           <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Number of Shares"
+              name="shares"
+              value={formData.financials.shares}
+              onChange={(e) => handleFinancialChange(e, 'shares')}
+            />
+          </Grid>
+          <Grid item xs={12} className='p-2 '>
+          <p>
+          Price per share: 
+          {(formData.financials.purchasePrice/formData.financials.shares).toFixed()}
+          </p>
+          </Grid>
+          <Grid item xs={12}>
           <TextField
             fullWidth
             label="Exit Yield"
