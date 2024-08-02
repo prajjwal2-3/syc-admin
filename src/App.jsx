@@ -10,7 +10,7 @@ const App = () => {
 
   useEffect(() => {
     const fetchProperties = async () => {
-      const response = await axios.get('http://localhost:5000/properties');
+      const response = await axios.get('https://syc-admin-backend.vercel.app/properties');
       setProperties(response.data);
     };
     fetchProperties();

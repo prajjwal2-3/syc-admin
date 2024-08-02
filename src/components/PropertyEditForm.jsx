@@ -15,21 +15,30 @@ const PropertyEditForm = ({ property }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFinancialChange = (e, key) => {
+  const handleFinancialChange = (e, field, index = null) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      financials: {
-        ...formData.financials,
-        [key]: value,
-      },
+  
+    setFormData((prevData) => {
+      const updatedFinancials = { ...prevData.financials };
+  
+      if (index !== null) {
+        updatedFinancials[field][index] = value;
+      } else {
+        updatedFinancials[field] = value;
+      }
+  
+      return {
+        ...prevData,
+        financials: updatedFinancials,
+      };
     });
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/properties/${formData._id}`, formData);
+      await axios.put(`https://syc-admin-backend.vercel.app/properties/${formData._id}`, formData);
       alert('Property updated successfully');
     } catch (error) {
       console.error(error);
@@ -79,6 +88,16 @@ const PropertyEditForm = ({ property }) => {
             />
           </Grid>
           <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Exit Yield"
+            name="exitYield"
+            value={formData.financials.exitYield}
+            onChange={(e) => handleFinancialChange(e, 'exitYield')}
+          />
+        </Grid>
+
+          <Grid item xs={12}>
             <TextField
               fullWidth
               label="Sale Price"
@@ -87,6 +106,41 @@ const PropertyEditForm = ({ property }) => {
               onChange={(e) => handleFinancialChange(e, 'salePrice')}
             />
           </Grid>
+          {formData.financials.rentalIncome.map((income, index) => (
+          <Grid item xs={6} md={4} key={index}>
+            <TextField
+              fullWidth
+              label={`Rental Income ${index + 1}`}
+              name={`rentalIncome-${index}`}
+              value={income}
+              onChange={(e) => handleFinancialChange(e, 'rentalIncome', index)}
+            />
+          </Grid>
+        ))}
+
+        {formData.financials.unleveredCFs.map((cf, index) => (
+          <Grid item xs={6} md={4} key={index}>
+            <TextField
+              fullWidth
+              label={`Unlevered CF ${index + 1}`}
+              name={`unleveredCFs-${index}`}
+              value={cf}
+              onChange={(e) => handleFinancialChange(e, 'unleveredCFs', index)}
+            />
+          </Grid>
+        ))}
+
+        {formData.financials.yieldOnCost.map((yieldCost, index) => (
+          <Grid item xs={6} md={4} key={index}>
+            <TextField
+              fullWidth
+              label={`Yield on Cost ${index + 1}`}
+              name={`yieldOnCost-${index}`}
+              value={yieldCost}
+              onChange={(e) => handleFinancialChange(e, 'yieldOnCost', index)}
+            />
+          </Grid>
+        ))}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -96,6 +150,7 @@ const PropertyEditForm = ({ property }) => {
               onChange={(e) => handleFinancialChange(e, 'unleveredIRREM')}
             />
           </Grid>
+          
           <Grid item xs={12}>
             <Button type="submit" variant="contained" color="primary">
               Save
